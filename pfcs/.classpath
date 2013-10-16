@@ -6,5 +6,9 @@
 	<classpathentry kind="lib" path="C:/Users/Dude/git/fhnw.pfcs/pfcs/lib/gluegen-rt-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Dude/git/fhnw.pfcs/pfcs/lib/jogl-all.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Dude/git/fhnw.pfcs/pfcs/lib/jogl-all-natives-windows-i586.jar"/>
+	<classpathentry kind="lib" path="lib/gluegen-rt-natives-windows-i586.jar"/>
+	<classpathentry kind="lib" path="lib/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="lib/jogl-all-natives-windows-i586.jar"/>
+	<classpathentry kind="lib" path="lib/jogl-all.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
