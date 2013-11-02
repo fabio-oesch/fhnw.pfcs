@@ -1,120 +1,152 @@
 package janfaessler.assignment_3;
 
+import java.awt.Color;
+
 import javax.media.opengl.GL2;
 import javax.vecmath.Point2d;
 
 public class Car {
 	
-	private final GL2 gl;							   
+	private final GL2 graphics;							   
     
-    private double size = 10;
-    private double weelSize = size/10;
+	private Color carColor = Color.RED;
+	
+    private double sizeCar = 10;
     
     private Point2d position;
-    private double angle = 0;
-    private double weelAngle = 0;
-    private double speed = 0;
-    private double rad = 0;
+    private double speed;
     
-    private double w;
-    private double h;
-    private double ax;
-    private double ay;
-    private double ww;
-    private double wh;
+    private double angleWheel = 0;
+    private double angleCar = 0;
+    private double angleAlpha = 0;
+    private double angleBeta = 0;
+        
+    private double carLenght;  
+    private double carWidth;
+    private double axisOffsetX;
+    private double axisLenght;
+    private double wheelLenght;
+    private double wheelWidth;
 	
-	public Car(GL2 gl, Point2d start, double size, double angle) {
-		this.gl = gl;
-		this.position = new Point2d(start.x, start.y);
-		this.size = size;
-		this.weelSize = size/10;
-		this.angle = angle;
+    public Car(GL2 gl, Point2d start, Color color) { this(gl, start, 10, 0, color); }
+    public Car(GL2 gl, Point2d start, double size) { this(gl, start, size, 0, Color.BLACK); }
+    public Car(GL2 gl, Point2d start, double size, double angle) { this(gl, start, size, angle, Color.BLACK); }
+    public Car(GL2 gl, Point2d start, double size, Color color) { this(gl, start, size, 0, color); }
+	public Car(GL2 gl, Point2d start, double size, double angle, Color color) {
+		graphics = gl;
+		position = new Point2d(start.x, start.y);
+		sizeCar = size;
+		angleCar = angle;
+		carColor = color;
 		
 		// calculate size
-		this.w = size/2;
-		this.h = size/2/2;
+		carLenght = size/2;   // the half of the car length for less calculations
+		carWidth = carLenght/2;  // the half of the car width for less calculations
 		
 		// calculate axis
-		this.ax = 2*w/3;
-		this.ay = h+h/3;
+		axisOffsetX = size/3;
+		axisLenght = carWidth + carWidth/3; // the half of the axis width for less calculations
 		
-		// calculate weels
-		this.ww = weelSize;
-		this.wh = weelSize/2;
+		// calculate wheels
+		wheelLenght = sizeCar/10;
+		wheelWidth = wheelLenght/2;
 		
 		draw();
 	}
 	
 	public void update() {
-		if (speed > 0) {
-			double dt = DrawUtils.getTimeStep();
-			Point2d v = new Point2d(0,0);
+		
+		double dt = DrawUtils.getTimeStep();
+
+		if (angleWheel == 0) {
 			
-			double T = 2 * Math.PI * rad / speed;
-			double w = 2 * Math.PI / T;
+			// drive straight on
+			position.x += speed * Math.cos(Math.toRadians(angleCar)) * dt;
+			position.y += speed * Math.sin(Math.toRadians(angleCar)) * dt;
 			
-			if (!equal(0, rad)) {
-				v.x = -w *  rad * Math.sin(Math.toRadians(w * dt));
-				v.y = w * rad * Math.cos(Math.toRadians(w * dt));
+		} else {
+			
+			double d = 2 * axisOffsetX;  // Abstand Achsen
+			double b = axisLenght;       // Halbe Breite
+			double r;                    // Radius
+			
+			if (angleWheel > 0) {
+				
+				// turn left
+				r = b + d / Math.tan(Math.toRadians(angleWheel));
+				angleAlpha = angleWheel;
+				angleBeta  = Math.toDegrees(Math.tan(d / (r - b)));
+				
 			} else {
-				v.x = speed;
-				v.y = 0;
+				
+				// turn right
+				r = -b + d / Math.tan(Math.toRadians(angleWheel));
+				angleAlpha = Math.toDegrees(Math.tan(d / (r - b)));
+				angleBeta = angleWheel;
+				
 			}
 			
-			position.x += v.x * dt;
-			position.y += v.y * dt;
+			double deltaPhi = speed * dt / r;
 			
-			System.out.println("rad: "+rad + "\t w: " + w + "\t T: "+T+"\t speed: "+speed+"\t v.x: "+v.x+"\t v.y: "+v.y+"\t pos.x: "+position.x+"\t pos.y: "+position.y);
+			position.x += r * (Math.sin(Math.toRadians(angleCar) + deltaPhi) - Math.sin(Math.toRadians(angleCar)));
+			position.y -= r * (Math.cos(Math.toRadians(angleCar) + deltaPhi) - Math.cos(Math.toRadians(angleCar)));
+			
+			angleCar += Math.toDegrees(deltaPhi);
 		}
+
 		draw();
 	}
-	private static boolean equal(double a, double b) {
-		return Math.abs(a - b) < 0.000000001;
-	}
 	
-	public final double getWeelSize() { return weelSize; }
-	public final void setWeelSize(double weelSize) { this.weelSize = weelSize; }
+	public final Color getColor() { return carColor; }
+	public final void setColor(Color color) { this.carColor = color; } 
+	
+	public final Point2d getPosition() { return position; }
+	public final void setPosition(Point2d location) { position = location; }
 
-	public final double getRad() { return rad; }
-	public final void setRad(double rad) { this.rad = rad; }
+	public final double getWheelAngle() { return angleWheel; }
+	public final void setWheelAngle(double angle) { this.angleWheel = angle; }
+	
+	public final double getAngle() { return angleCar; }
+	public final void setAngle(double angle) { this.angleCar = angle; }
 	
 	public final double getSpeed() { return speed; }
 	public final void setSpeed(double speed) { this.speed = speed; }
 
 	private void draw() {
-		gl.glPushMatrix();
+		graphics.glPushMatrix();
+		graphics.glColor3d(carColor.getRed()/255, carColor.getGreen()/255, carColor.getBlue()/255);
 		
 		// translate and rotate
-		gl.glTranslated(position.x, position.y, 0);
-		gl.glRotated(angle, 0, 0, 1);
+		graphics.glTranslated(position.x, position.y, 0);
+		graphics.glRotated(angleCar, 0, 0, 1);
 		
 		// draw body
-		DrawUtils.drawRect(gl, new Point2d(-w, h), new Point2d(w, -h));
+		DrawUtils.drawRect(graphics, new Point2d(-carLenght, carWidth), new Point2d(carLenght, -carWidth), true);
 		
 		// draw axis
-		DrawUtils.drawLine(gl, new Point2d(-ax, ay), new Point2d(-ax, -ay));
-		DrawUtils.drawLine(gl, new Point2d(ax, ay),  new Point2d(ax, -ay));
+		DrawUtils.drawLine(graphics, new Point2d(-axisOffsetX, axisLenght), new Point2d(-axisOffsetX, -axisLenght));
+		DrawUtils.drawLine(graphics, new Point2d(axisOffsetX, axisLenght),  new Point2d(axisOffsetX, -axisLenght));
 		
 		// draw weels
-		drawWeel(new Point2d(-ax,  ay+weelSize/2),           0);
-		drawWeel(new Point2d(-ax, -ay-weelSize/2),           0);
-		drawWeel(new Point2d(ax,   ay+weelSize/2),   weelAngle);
-		drawWeel(new Point2d(ax,  -ay-weelSize/2),   weelAngle);
+		drawWeel(new Point2d(-axisOffsetX,  axisLenght+wheelWidth),           0);
+		drawWeel(new Point2d(-axisOffsetX, -axisLenght-wheelWidth),           0);
+		drawWeel(new Point2d(axisOffsetX,   axisLenght+wheelWidth),   angleAlpha);
+		drawWeel(new Point2d(axisOffsetX,  -axisLenght-wheelWidth),   angleBeta);
 		
-		gl.glPopMatrix();
+		graphics.glPopMatrix();
 	}
 	
 	private void drawWeel(Point2d pos, double angle) {
-		gl.glPushMatrix();
+		graphics.glPushMatrix();
 		
 		// translate and rotate
-		gl.glTranslated(pos.x, pos.y, 0);
-		gl.glRotated(angle, 0, 0, 1);
+		graphics.glTranslated(pos.x, pos.y, 0);
+		graphics.glRotated(angle, 0, 0, 1);
 		
 		// draw weel
-		DrawUtils.drawRect(gl, new Point2d(-ww, wh), new Point2d(ww, -wh));
+		DrawUtils.drawRect(graphics, new Point2d(-wheelLenght, wheelWidth), new Point2d(wheelLenght, -wheelWidth), true);
 		
-		gl.glPopMatrix();
+		graphics.glPopMatrix();
 	}
 
 }

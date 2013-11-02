@@ -1,5 +1,6 @@
 package janfaessler.assignment_3;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -18,16 +19,14 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 
 	private final int viewportWidth = 50;
 	
-	private final double speedSteps = 0.01;
-	
+	private final double speedSteps = 1.0;
+	private final double angleSteps = 1.5;
 	
 	private Course course;
 	private Car car;
 	
-	private double maxRad = 10;
-	private double minRad =  1;
-	private double radSteps = 1;
-	
+	private boolean running = false;
+	private double speed;
 
 	public static void main(String[] args) { new RacingGame(); }
 	
@@ -43,6 +42,7 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
         this.add(canvas); 
         FPSAnimator anim = new FPSAnimator(canvas, 60, true); 
         anim.start(); 
+ 
         
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true); 
@@ -52,10 +52,10 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
     public void init(GLAutoDrawable drawable) { 
         GL gl0 = drawable.getGL(); 
         GL2 gl = gl0.getGL2(); 
-        gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        gl.glClearColor(0.25f, 0.25f, 1.0f, 1.0f);
         
         course = new RoundCourse(gl);
-        car = new Car(gl, course.getStartPosition(), 10, course.getStartAngle());
+        car = new Car(gl, course.getStartPosition(), 2.5, Color.RED);
     } 
 
 	@Override
@@ -64,9 +64,8 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
         GL2 gl = gl0.getGL2(); 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT); 
         gl.glMatrixMode(GL2.GL_MODELVIEW); 
-        gl.glLoadIdentity();
-        
-        
+        gl.glColor3d(0, 0, 0);
+
         course.draw();
         car.update();
 	}
@@ -97,36 +96,40 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
-			if (car.getRad() == 0) car.setRad(maxRad);
-			else if ((car.getRad() > minRad) || 
-					 (car.getRad() <= -minRad && car.getRad() > -maxRad)) 
-				car.setRad(car.getRad() - radSteps);
-			else if (car.getRad() == -maxRad)
-				car.setRad(0);
-				
-			
-			System.out.println("rad: "+car.getRad());
+			if (car.getWheelAngle() < 25)
+				car.setWheelAngle(car.getWheelAngle() + angleSteps);
+			System.out.println("angle: "+car.getWheelAngle());
 			break;
 		case KeyEvent.VK_RIGHT:
-			if (car.getRad() == 0) car.setRad(-maxRad);
-			else if ((car.getRad() < -minRad) || 
-					 (car.getRad() >= minRad && car.getRad() < maxRad)) 
-				car.setRad(car.getRad() + radSteps);
-			else if (car.getRad() == maxRad)
-				car.setRad(0);
-			
-			System.out.println("rad: "+car.getRad());
+			if (car.getWheelAngle() > -25)
+				car.setWheelAngle(car.getWheelAngle() - angleSteps);
+			System.out.println("angle: "+ car.getWheelAngle());
 			break;
 		case KeyEvent.VK_UP:
-			if (car.getSpeed() < 100)
+			if (car.getSpeed() < 20)
 				car.setSpeed(car.getSpeed() + speedSteps);
 			System.out.println("speed: "+car.getSpeed());
 			break;
 		case KeyEvent.VK_DOWN:
-			if (car.getSpeed() > 0)
+			if (car.getSpeed() > -20)
 				car.setSpeed(car.getSpeed() - speedSteps);
 			System.out.println("speed: "+car.getSpeed());
 			break;
+		case KeyEvent.VK_S:
+			if (running) {
+				running = false;
+				speed = car.getSpeed();
+				car.setSpeed(0);
+			} else {
+				running = true;
+				car.setSpeed(speed);
+			}
+			break;
+		case KeyEvent.VK_R: 
+			car.setSpeed(0);
+			car.setAngle(0);
+			car.setWheelAngle(0);
+			car.setPosition(course.getStartPosition());
 		}
 	}
 
