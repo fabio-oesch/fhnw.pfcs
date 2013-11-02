@@ -1,6 +1,7 @@
 package janfaessler.assignment_3;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -10,15 +11,17 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
+import javax.vecmath.Point2d;
 
 import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 
 	private static final long serialVersionUID = -8790324402153794190L;
 
 	private final int viewportWidth = 50;
-	
+	private final double maxCentripetalForce = 2 * 9.80665; // 2g
 	private final double speedSteps = 1.0;
 	private final double angleSteps = 1.5;
 	
@@ -27,6 +30,13 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 	
 	private boolean running = false;
 	private double speed;
+	
+	private double top;
+	private double bottom;
+	private double left;
+	private double right;
+	
+	private TextRenderer renderer;
 
 	public static void main(String[] args) { new RacingGame(); }
 	
@@ -42,8 +52,7 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
         this.add(canvas); 
         FPSAnimator anim = new FPSAnimator(canvas, 60, true); 
         anim.start(); 
- 
-        
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true); 
 	}
@@ -52,10 +61,12 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
     public void init(GLAutoDrawable drawable) { 
         GL gl0 = drawable.getGL(); 
         GL2 gl = gl0.getGL2(); 
-        gl.glClearColor(0.25f, 0.25f, 1.0f, 1.0f);
+        gl.glClearColor(0f, 0f, 0f, 1.0f);
         
         course = new RoundCourse(gl);
         car = new Car(gl, course.getStartPosition(), 2.5, Color.RED);
+        
+        renderer = new TextRenderer(new Font("Arial", Font.BOLD, 10));
     } 
 
 	@Override
@@ -68,6 +79,30 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 
         course.draw();
         car.update();
+        
+        drawCentripetalForcePanel(gl);
+        
+        // draw car info
+        renderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		renderer.draw(car.toString(), 10, 20);
+		renderer.endRendering();
+	}
+	
+	private void drawCentripetalForcePanel(GL2 gl) {
+        double width = 20;
+        gl.glPushMatrix();
+        gl.glColor3d(1,1,1);
+        gl.glTranslated(left + 2.5, top -4, 0);
+        DrawUtils.drawRect(gl, new Point2d(0,0), new Point2d(width + 0.1, 2.5), false);
+        double value = car.getCentripetalForce() * width / maxCentripetalForce;
+        if (car.getCentripetalForce() > maxCentripetalForce) {
+        	value = width ;
+        	gl.glColor3d(1,0,0);
+        } else {
+        	gl.glColor3d(0,1,0);
+        }
+        DrawUtils.drawRect(gl, new Point2d(0.1, 0.1), new Point2d(value, 2.5), true);
+        gl.glPopMatrix();
 	}
 
 
@@ -76,10 +111,10 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
         GL2 gl = drawable.getGL().getGL2();
         gl.glViewport(0, 0, width, height);
         double aspect = (double) height / width;
-        double left = -viewportWidth;
-        double right = viewportWidth;
-        double bottom = left * aspect;
-        double top = right * aspect;
+        left = -viewportWidth;
+        right = viewportWidth;
+        bottom = left * aspect;
+        top = right * aspect;
         double near = -100, far = 100;
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
@@ -95,41 +130,38 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
-		case KeyEvent.VK_LEFT:
-			if (car.getWheelAngle() < 25)
-				car.setWheelAngle(car.getWheelAngle() + angleSteps);
-			System.out.println("angle: "+car.getWheelAngle());
-			break;
-		case KeyEvent.VK_RIGHT:
-			if (car.getWheelAngle() > -25)
-				car.setWheelAngle(car.getWheelAngle() - angleSteps);
-			System.out.println("angle: "+ car.getWheelAngle());
-			break;
-		case KeyEvent.VK_UP:
-			if (car.getSpeed() < 20)
-				car.setSpeed(car.getSpeed() + speedSteps);
-			System.out.println("speed: "+car.getSpeed());
-			break;
-		case KeyEvent.VK_DOWN:
-			if (car.getSpeed() > -20)
-				car.setSpeed(car.getSpeed() - speedSteps);
-			System.out.println("speed: "+car.getSpeed());
-			break;
-		case KeyEvent.VK_S:
-			if (running) {
-				running = false;
-				speed = car.getSpeed();
+			case KeyEvent.VK_LEFT:
+				if (car.getWheelAngle() < 25)
+					car.setWheelAngle(car.getWheelAngle() + angleSteps);
+				break;
+			case KeyEvent.VK_RIGHT:
+				if (car.getWheelAngle() > -25)
+					car.setWheelAngle(car.getWheelAngle() - angleSteps);
+				break;
+			case KeyEvent.VK_UP:
+				if (car.getSpeed() < 20)
+					car.setSpeed(car.getSpeed() + speedSteps);
+				break;
+			case KeyEvent.VK_DOWN:
+				if (car.getSpeed() > -20)
+					car.setSpeed(car.getSpeed() - speedSteps);
+				break;
+			case KeyEvent.VK_S:
+				if (running) {
+					running = false;
+					speed = car.getSpeed();
+					car.setSpeed(0);
+				} else {
+					running = true;
+					car.setSpeed(speed);
+				}
+				break;
+			case KeyEvent.VK_R: 
 				car.setSpeed(0);
-			} else {
-				running = true;
-				car.setSpeed(speed);
-			}
-			break;
-		case KeyEvent.VK_R: 
-			car.setSpeed(0);
-			car.setAngle(0);
-			car.setWheelAngle(0);
-			car.setPosition(course.getStartPosition());
+				car.setAngle(0);
+				car.setWheelAngle(0);
+				car.setPosition(course.getStartPosition());
+				break;
 		}
 	}
 

@@ -19,6 +19,7 @@ public class RoundCourse implements Course {
 	private void drawRound(Point2d start, double phi, double dphi, double s) {
 		gl.glPushMatrix();
 		gl.glTranslated(start.x, start.y, 0);
+		gl.glColor3d(0.75, 0.75, 0.75);
 
 		for (int i = 0;  i < 30; i++) {
 			DrawUtils.drawLine(gl, s);
