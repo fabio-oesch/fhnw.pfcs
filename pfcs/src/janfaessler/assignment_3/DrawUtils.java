@@ -7,7 +7,7 @@ import javax.vecmath.Point2d;
 public class DrawUtils {
 
 	private static final double dt = 0.05;  // time step  (0.05) 
-
+	
 	public static double getTimeStep() { return dt; }
 	
 	public static void drawLine(GL2 gl, Point2d start, Point2d end) {

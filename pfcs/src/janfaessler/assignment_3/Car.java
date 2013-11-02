@@ -11,7 +11,6 @@ public class Car {
     
 	// car default properties
 	private Color color;
-    private double size;
     
     // position and speed
     private Point2d position;
@@ -40,7 +39,6 @@ public class Car {
 		// add class cariables
 		this.graphics = gl;
 		this.position = (Point2d) start.clone();
-		this.size = size;
 		this.angleCar = angle;
 		this.color = color;
 		
@@ -125,7 +123,7 @@ public class Car {
 	public final void setSpeed(double speed) { this.speed = speed; }
 	
 	public String toString() {
-		return "angleCar: " + String.format("%.2f",Math.abs(angleCar)) + ", "
+		return        "angleCar: " + String.format("%.2f",Math.abs(angleCar)) + ", "
 					+ "angleWheel: " + String.format("%.2f",angleWheel) + ", "
 		    		+ "speed: " + speed + ", "
 		    	    + "centripetal force: " + getCentripetalForce();

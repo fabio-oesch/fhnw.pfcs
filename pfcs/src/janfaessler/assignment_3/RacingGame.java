@@ -20,15 +20,17 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 
 	private static final long serialVersionUID = -8790324402153794190L;
 
-	private final int viewportWidth = 50;
-	private final double maxCentripetalForce = 2 * 9.80665; // 2g
-	private final double speedSteps = 1.0;
-	private final double angleSteps = 1.5;
+	private static final int viewportWidth = 50;
+	private static final double maxCentripetalForce = 2 * 9.80665; // 2g
+	private static final int maxAngle = 25;
+	private static final int maxSpeed = 20;
+	private static final double speedSteps = 1.0;
+	private static final double angleSteps = 1.5;
 	
 	private Course course;
 	private Car car;
 	
-	private boolean running = false;
+	private boolean running = true;
 	private double speed;
 	
 	private double top;
@@ -131,19 +133,19 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 			case KeyEvent.VK_LEFT:
-				if (car.getWheelAngle() < 25)
+				if (car.getWheelAngle() < maxAngle)
 					car.setWheelAngle(car.getWheelAngle() + angleSteps);
 				break;
 			case KeyEvent.VK_RIGHT:
-				if (car.getWheelAngle() > -25)
+				if (car.getWheelAngle() > -maxAngle)
 					car.setWheelAngle(car.getWheelAngle() - angleSteps);
 				break;
 			case KeyEvent.VK_UP:
-				if (car.getSpeed() < 20)
+				if (car.getSpeed() < maxSpeed)
 					car.setSpeed(car.getSpeed() + speedSteps);
 				break;
 			case KeyEvent.VK_DOWN:
-				if (car.getSpeed() > -20)
+				if (car.getSpeed() > -maxSpeed)
 					car.setSpeed(car.getSpeed() - speedSteps);
 				break;
 			case KeyEvent.VK_S:
