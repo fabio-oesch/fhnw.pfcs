@@ -12,6 +12,8 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
 
+import uebung2.Vector2d;
+
 import com.jogamp.opengl.util.FPSAnimator;
 
 public class SchieferWurf implements WindowListener, GLEventListener,
