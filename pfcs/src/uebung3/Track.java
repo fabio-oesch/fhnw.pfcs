@@ -4,15 +4,14 @@ import java.awt.geom.Point2D;
 
 import javax.media.opengl.GL2;
 
-public class RoundCourse implements Course {
+public class Track {
 
 	private GL2 gl;
 
-	public RoundCourse(GL2 gl) {
+	public Track(GL2 gl) {
 		this.gl = gl;
 	}
 
-	@Override
 	public void draw() {
 		drawRound(new Point2D.Double(0, 20), 0, 0.1, 1);
 		drawRound(new Point2D.Double(0, 15), 0, 0.1, 0.75);
@@ -61,12 +60,10 @@ public class RoundCourse implements Course {
 		gl.glPopMatrix();
 	}
 
-	@Override
 	public Point2D.Double getStartPosition() {
 		return new Point2D.Double(0, 17.5);
 	}
 
-	@Override
 	public double getStartAngle() {
 		return 0.0;
 	}

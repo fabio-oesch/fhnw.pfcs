@@ -21,13 +21,13 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 	private static final long serialVersionUID = -8790324402153794190L;
 
 	private static final int viewportWidth = 50;
-	private static final double maxCentripetalForce = 2 * 9.80665; // 2g
-	private static final int maxAngle = 25;
-	private static final int maxSpeed = 20;
+	private static final double maxCentripetalForce = 20;
+	private static int maxAngle = 25;
+	private static int maxSpeed = 20;
 	private static final double speedSteps = 1.0;
-	private static final double angleSteps = 1.5;
+	private static final double angleSteps = 1.0;
 
-	private Course course;
+	private Track course;
 	private Car car;
 
 	private boolean running = true;
@@ -67,8 +67,8 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 		GL2 gl = gl0.getGL2();
 		gl.glClearColor(0f, 0f, 0f, 1.0f);
 
-		course = new RoundCourse(gl);
-		car = new Car(gl, course.getStartPosition(), 2.5, Color.RED);
+		course = new Track(gl);
+		car = new Car(gl, course.getStartPosition(), 5, Color.RED);
 
 		renderer = new TextRenderer(new Font("Arial", Font.BOLD, 10));
 	}
@@ -173,6 +173,10 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 			car.setAngle(0);
 			car.setWheelAngle(0);
 			car.setPosition(course.getStartPosition());
+			break;
+		case KeyEvent.VK_SPACE:
+			maxAngle = 90;
+			maxSpeed = 100;
 			break;
 		}
 	}
