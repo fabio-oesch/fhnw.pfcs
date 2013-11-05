@@ -45,8 +45,8 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 	}
 
 	public RacingGame() {
-		this.setName("RacingGame");
-		this.setTitle("RacingGame");
+		this.setName("CarOnTrack");
+		this.setTitle("CarOnTrack");
 		this.setSize(800, 600);
 		this.addKeyListener(this);
 
