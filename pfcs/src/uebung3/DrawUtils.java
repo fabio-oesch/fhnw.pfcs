@@ -26,6 +26,16 @@ public class DrawUtils {
 		gl.glEnd();
 	}
 
+	public static void drawCar(GL2 gl, Point2D.Double p1,
+			Point2D.Double p2, boolean fill) {
+		gl.glBegin(fill ? GL2.GL_POLYGON : GL2.GL_LINE_LOOP);
+		gl.glVertex2d(p1.x, p1.y);
+		gl.glVertex2d(p2.x, p1.y - 1);
+		gl.glVertex2d(p2.x, p2.y + 1);
+		gl.glVertex2d(p1.x, p2.y);
+		gl.glEnd();
+	}
+
 	public static void drawRect(GL2 gl, Point2D.Double p1, Point2D.Double p2,
 			boolean fill) {
 		gl.glBegin(fill ? GL2.GL_POLYGON : GL2.GL_LINE_LOOP);

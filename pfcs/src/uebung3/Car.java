@@ -2,6 +2,7 @@ package uebung3;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.util.Random;
 
 import javax.media.opengl.GL2;
 
@@ -25,7 +26,8 @@ public class Car {
 	private double carLenght;
 	private double carWidth;
 	private double axisOffsetX;
-	private double axisLenght;
+	private double axisBackLenght;
+	private double axisFrontLength;
 	private double wheelLenght;
 	private double wheelWidth;
 	private double radius;
@@ -63,8 +65,10 @@ public class Car {
 
 		// calculate axis
 		axisOffsetX = size / 3;
-		axisLenght = carWidth + carWidth / 3; // the half of the axis width for
-												// less calculations
+		axisBackLenght = carWidth + carWidth / 3; // the half of the axis width
+													// for
+													// less calculations
+		axisFrontLength = carWidth;
 
 		// calculate wheels
 		wheelLenght = size / 10;
@@ -89,7 +93,7 @@ public class Car {
 		} else {
 
 			double d = 2 * axisOffsetX; // Abstand Achsen
-			double b = axisLenght; // Halbe Breite
+			double b = axisBackLenght; // Halbe Breite
 
 			if (angleWheel > 0) {
 
@@ -167,13 +171,13 @@ public class Car {
 
 	@Override
 	public String toString() {
-		return "angleCar: " + String.format("%.2f", Math.abs(angleCar)) + ", "
-				+ "angleWheel: " + String.format("%.2f", angleWheel) + ", "
-				+ "speed: " + speed + ", " + "centripetal force: "
-				+ getCentripetalForce();
+		return "angleCar: " + String.format("%.2f", Math.abs(angleCar)) + ","
+				+ "angleWheel: " + String.format("%.2f", angleWheel) + ","
+				+ "speed: " + speed;
 	}
 
 	private void draw() {
+		Random r = new Random();
 		graphics.glPushMatrix();
 		graphics.glColor3d(color.getRed() / 255, color.getGreen() / 255,
 				color.getBlue() / 255);
@@ -183,22 +187,28 @@ public class Car {
 		graphics.glRotated(angleCar, 0, 0, 1);
 
 		// draw body
-		DrawUtils.drawRect(graphics, new Point2D.Double(-carLenght, carWidth),
-				new Point2D.Double(carLenght, -carWidth), true);
+		DrawUtils.drawCar(graphics,
+				new Point2D.Double(-carLenght, carWidth), new Point2D.Double(
+						carLenght, -carWidth), true);
 
 		// draw axis
 		DrawUtils.drawLine(graphics, new Point2D.Double(-axisOffsetX,
-				axisLenght), new Point2D.Double(-axisOffsetX, -axisLenght));
-		DrawUtils.drawLine(graphics,
-				new Point2D.Double(axisOffsetX, axisLenght),
-				new Point2D.Double(axisOffsetX, -axisLenght));
+				axisBackLenght), new Point2D.Double(-axisOffsetX,
+				-axisBackLenght));
+		DrawUtils.drawLine(graphics, new Point2D.Double(axisOffsetX,
+				axisFrontLength), new Point2D.Double(axisOffsetX,
+				-axisFrontLength));
 
 		// draw weels
-		drawWeel(new Point2D.Double(-axisOffsetX, axisLenght + wheelWidth), 0);
-		drawWeel(new Point2D.Double(-axisOffsetX, -axisLenght - wheelWidth), 0);
-		drawWeel(new Point2D.Double(axisOffsetX, axisLenght + wheelWidth),
+		drawWeel(new Point2D.Double(-axisOffsetX, axisBackLenght + wheelWidth),
+				0);
+		drawWeel(
+				new Point2D.Double(-axisOffsetX, -axisBackLenght - wheelWidth),
+				0);
+		drawWeel(new Point2D.Double(axisOffsetX, axisFrontLength + wheelWidth),
 				angleLeft);
-		drawWeel(new Point2D.Double(axisOffsetX, -axisLenght - wheelWidth),
+		drawWeel(
+				new Point2D.Double(axisOffsetX, -axisFrontLength - wheelWidth),
 				angleRight);
 
 		graphics.glPopMatrix();

@@ -65,10 +65,9 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 	public void init(GLAutoDrawable drawable) {
 		GL gl0 = drawable.getGL();
 		GL2 gl = gl0.getGL2();
-		gl.glClearColor(0f, 0f, 0f, 1.0f);
 
 		course = new Track(gl);
-		car = new Car(gl, course.getStartPosition(), 5, Color.RED);
+		car = new Car(gl, course.getStartPosition(), 8, Color.BLACK);
 
 		renderer = new TextRenderer(new Font("Arial", Font.BOLD, 10));
 	}
@@ -80,6 +79,7 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glColor3d(0, 0, 0);
+		gl.glClearColor(1f, 1f, 1f, 1.0f);
 
 		course.draw();
 		car.update();
@@ -88,15 +88,24 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 
 		// draw car info
 		renderer.beginRendering(drawable.getWidth(), drawable.getHeight());
-		renderer.draw(car.toString(), 10, 20);
+		renderer.setColor(Color.BLACK);
+		String carString = car.toString();
+		renderer.draw(carString.subSequence(0, carString.indexOf(",")), 10, 20);
+		renderer.draw(
+				carString.subSequence(carString.indexOf(",") + 1,
+						carString.indexOf((","), carString.indexOf(",") + 1)),
+				10, 35);
+		renderer.draw(
+				carString.substring(carString.indexOf((","),
+						carString.indexOf(",") + 1) + 1), 10, 50);
 		renderer.endRendering();
 	}
 
 	private void drawCentripetalForcePanel(GL2 gl) {
-		double width = 20;
+		double width = 30;
 		gl.glPushMatrix();
-		gl.glColor3d(1, 1, 1);
-		gl.glTranslated(left + 2.5, top - 4, 0);
+		gl.glColor3d(0, 0, 0);
+		gl.glTranslated(right - 2.5 - width, bottom + 4, 0);
 		DrawUtils.drawRect(gl, new Point2D.Double(0, 0), new Point2D.Double(
 				width + 0.1, 2.5), false);
 		double value = car.getCentripetalForce() * width / maxCentripetalForce;
@@ -175,8 +184,13 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 			car.setPosition(course.getStartPosition());
 			break;
 		case KeyEvent.VK_SPACE:
-			maxAngle = 90;
-			maxSpeed = 100;
+			if (maxAngle < 90) {
+				maxAngle = 90;
+				maxSpeed = 100;
+			} else {
+				maxAngle = 25;
+				maxSpeed = 20;
+			}
 			break;
 		}
 	}
