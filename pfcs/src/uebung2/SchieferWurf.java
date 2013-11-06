@@ -1,5 +1,7 @@
 package uebung2;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,16 +14,15 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
 
-import uebung2.Vector2d;
-
 import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 public class SchieferWurf implements WindowListener, GLEventListener,
 		KeyListener {
 
 	private static final String TITLE = "Schiefer Wurf";
 	private static final int DISPLAY_WIDTH = 800;
-	private static final int DISPLAY_HEIGHT = DISPLAY_WIDTH / 4 * 3;
+	private static final int DISPLAY_HEIGHT = 600;
 	private static final int FPS = 60;
 
 	public static void main(String[] args) {
@@ -37,6 +38,8 @@ public class SchieferWurf implements WindowListener, GLEventListener,
 	private double omega; // throwing angle
 	private int ballsThrown; // number of balls thrown
 	private double delay; // time delay (frames)
+
+	private TextRenderer renderer;
 
 	public SchieferWurf() {
 		Frame f = new Frame(TITLE);
@@ -57,6 +60,7 @@ public class SchieferWurf implements WindowListener, GLEventListener,
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
+		gl.glClearColor(0, 0, 0, 1);
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
@@ -98,6 +102,18 @@ public class SchieferWurf implements WindowListener, GLEventListener,
 			}
 		}
 		gl.glPopMatrix();
+
+		renderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		renderer.setColor(Color.WHITE);
+		renderer.draw("Angle: " + omega, 10, 510);
+		renderer.draw("Velocity: " + startVelocity, 10, 490);
+		renderer.draw(
+				"Help: 'SPACE' to reset. 'UP' to increase speed. 'DOWN' to decrease speed. 'LEFT' to shoot further to the left.",
+				10, 550);
+		renderer.draw(
+				"'RIGHT' to shoot further to the right. 't' to start and stop.",
+				30, 530);
+		renderer.endRendering();
 	}
 
 	@Override
@@ -108,11 +124,11 @@ public class SchieferWurf implements WindowListener, GLEventListener,
 		gl.glBegin(GL2.GL_LINES);
 		{
 			// horizontal
-			gl.glVertex3d(startPosition.x - 2, startPosition.y, 0);
-			gl.glVertex3d(startPosition.x + 2, startPosition.y, 0);
+			gl.glVertex3d(startPosition.x - 1, startPosition.y, 0);
+			gl.glVertex3d(startPosition.x + 1, startPosition.y, 0);
 			// vertical
-			gl.glVertex3d(startPosition.x, startPosition.y - 2, 0);
-			gl.glVertex3d(startPosition.x, startPosition.y + 2, 0);
+			gl.glVertex3d(startPosition.x, startPosition.y - 1, 0);
+			gl.glVertex3d(startPosition.x, startPosition.y + 1, 0);
 		}
 		gl.glEnd();
 	}
@@ -130,6 +146,7 @@ public class SchieferWurf implements WindowListener, GLEventListener,
 	public void init(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+		renderer = new TextRenderer(new Font("Arial", Font.BOLD, 10));
 	}
 
 	@Override
@@ -151,27 +168,9 @@ public class SchieferWurf implements WindowListener, GLEventListener,
 			break;
 		case KeyEvent.VK_DOWN:
 			startVelocity -= 1;
-			if (startVelocity < 3) {
-				startVelocity = 5;
-			}
 			break;
 		case KeyEvent.VK_UP:
 			startVelocity += 1;
-			if (startVelocity > 35) {
-				startVelocity = 35;
-			}
-			break;
-		case KeyEvent.VK_C:
-			delay += 1;
-			if (delay > 50) {
-				delay = 50;
-			}
-			break;
-		case KeyEvent.VK_F:
-			delay -= 1;
-			if (delay < 2) {
-				delay = 2;
-			}
 			break;
 
 		case KeyEvent.VK_T:
@@ -191,9 +190,9 @@ public class SchieferWurf implements WindowListener, GLEventListener,
 	private void reset() {
 		enabled = true;
 		frames = 0;
-		startVelocity = 20;
+		startVelocity = 30;
 		startPosition = new Vector2d(-20, 8);
-		omega = 45;
+		omega = 25;
 		ballsThrown = 0;
 		delay = 10;
 		balls.clear();

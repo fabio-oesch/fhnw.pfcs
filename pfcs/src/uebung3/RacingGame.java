@@ -90,14 +90,17 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
 		renderer.beginRendering(drawable.getWidth(), drawable.getHeight());
 		renderer.setColor(Color.BLACK);
 		String carString = car.toString();
-		renderer.draw(carString.subSequence(0, carString.indexOf(",")), 10, 20);
+		renderer.draw(carString.subSequence(0, carString.indexOf(",")), 10, 490);
 		renderer.draw(
 				carString.subSequence(carString.indexOf(",") + 1,
 						carString.indexOf((","), carString.indexOf(",") + 1)),
-				10, 35);
+				10, 510);
 		renderer.draw(
 				carString.substring(carString.indexOf((","),
-						carString.indexOf(",") + 1) + 1), 10, 50);
+						carString.indexOf(",") + 1) + 1), 10, 530);
+		renderer.draw(
+				"Help: 'r' to reset. 'UP' to increase speed. 'DOWN' to decrease speed. 'LEFT' to steer left. 'RIGHT' to steer right. 's' to start and stop.",
+				10, 550);
 		renderer.endRendering();
 	}
 
