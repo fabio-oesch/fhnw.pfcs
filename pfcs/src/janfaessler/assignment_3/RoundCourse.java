@@ -1,7 +1,8 @@
 package janfaessler.assignment_3;
 
+import java.awt.geom.Point2D;
+
 import javax.media.opengl.GL2;
-import javax.vecmath.Point2d;
 
 public class RoundCourse implements Course {
 	
@@ -12,11 +13,11 @@ public class RoundCourse implements Course {
 	}
 	
 	public void draw() {		
-		drawRound(new Point2d(0, 20), 0, 0.1, 1);
-		drawRound(new Point2d(0, 15), 0, 0.1, 0.75);
+		drawRound(new Point2D.Double(0, 20), 0, 0.1, 1);
+		drawRound(new Point2D.Double(0, 15), 0, 0.1, 0.75);
 	}
 	
-	private void drawRound(Point2d start, double phi, double dphi, double s) {
+	private void drawRound(Point2D.Double start, double phi, double dphi, double s) {
 		gl.glPushMatrix();
 		gl.glTranslated(start.x, start.y, 0);
 		gl.glColor3d(0.75, 0.75, 0.75);
@@ -61,8 +62,8 @@ public class RoundCourse implements Course {
 
 
 	@Override
-	public Point2d getStartPosition() {
-		return new Point2d(0, 17.5);
+	public Point2D.Double getStartPosition() {
+		return new Point2D.Double(0, 17.5);
 	}
 
 	@Override

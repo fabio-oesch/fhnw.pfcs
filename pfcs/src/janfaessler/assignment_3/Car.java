@@ -1,9 +1,9 @@
 package janfaessler.assignment_3;
 
 import java.awt.Color;
+import java.awt.geom.Point2D;
 
 import javax.media.opengl.GL2;
-import javax.vecmath.Point2d;
 
 public class Car {
 	
@@ -13,7 +13,7 @@ public class Car {
 	private Color color;
     
     // position and speed
-    private Point2d position;
+    private Point2D.Double position;
     private double speed;
     
     // angles
@@ -30,15 +30,15 @@ public class Car {
     private double wheelWidth;
     private double radius;
 	
-    public Car(GL2 gl, Point2d start, Color color) {               this(gl, start, 10, 0, color); }
-    public Car(GL2 gl, Point2d start, double size) {               this(gl, start, size, 0, Color.RED); }
-    public Car(GL2 gl, Point2d start, double size, double angle) { this(gl, start, size, angle, Color.RED); }
-    public Car(GL2 gl, Point2d start, double size, Color color) {  this(gl, start, size, 0, color); }
-	public Car(GL2 gl, Point2d start, double size, double angle, Color color) {
+    public Car(GL2 gl, Point2D.Double start, Color color) {               this(gl, start, 10, 0, color); }
+    public Car(GL2 gl, Point2D.Double start, double size) {               this(gl, start, size, 0, Color.RED); }
+    public Car(GL2 gl, Point2D.Double start, double size, double angle) { this(gl, start, size, angle, Color.RED); }
+    public Car(GL2 gl, Point2D.Double start, double size, Color color) {  this(gl, start, size, 0, color); }
+	public Car(GL2 gl, Point2D.Double start, double size, double angle, Color color) {
 		
 		// add class cariables
 		this.graphics = gl;
-		this.position = (Point2d) start.clone();
+		this.position = (Point2D.Double) start.clone();
 		this.angleCar = angle;
 		this.color = color;
 		
@@ -110,8 +110,8 @@ public class Car {
 	public final Color getColor() { return color; }
 	public final void setColor(Color color) { this.color = color; } 
 	
-	public final Point2d getPosition() { return position; }
-	public final void setPosition(Point2d location) { position = location; }
+	public final Point2D.Double getPosition() { return position; }
+	public final void setPosition(Point2D.Double location) { position = location; }
 
 	public final double getWheelAngle() { return angleWheel; }
 	public final void setWheelAngle(double angle) { this.angleWheel = angle; }
@@ -138,22 +138,22 @@ public class Car {
 		graphics.glRotated(angleCar, 0, 0, 1);
 		
 		// draw body
-		DrawUtils.drawRect(graphics, new Point2d(-carLenght, carWidth), new Point2d(carLenght, -carWidth), true);
+		DrawUtils.drawRect(graphics, new Point2D.Double(-carLenght, carWidth), new Point2D.Double(carLenght, -carWidth), true);
 		
 		// draw axis
-		DrawUtils.drawLine(graphics, new Point2d(-axisOffsetX, axisLenght), new Point2d(-axisOffsetX, -axisLenght));
-		DrawUtils.drawLine(graphics, new Point2d(axisOffsetX, axisLenght),  new Point2d(axisOffsetX, -axisLenght));
+		DrawUtils.drawLine(graphics, new Point2D.Double(-axisOffsetX, axisLenght), new Point2D.Double(-axisOffsetX, -axisLenght));
+		DrawUtils.drawLine(graphics, new Point2D.Double(axisOffsetX, axisLenght),  new Point2D.Double(axisOffsetX, -axisLenght));
 		
 		// draw weels
-		drawWeel(new Point2d(-axisOffsetX,  axisLenght+wheelWidth),           0);
-		drawWeel(new Point2d(-axisOffsetX, -axisLenght-wheelWidth),           0);
-		drawWeel(new Point2d(axisOffsetX,   axisLenght+wheelWidth),   angleLeft);
-		drawWeel(new Point2d(axisOffsetX,  -axisLenght-wheelWidth),   angleRight);
+		drawWeel(new Point2D.Double(-axisOffsetX,  axisLenght+wheelWidth),           0);
+		drawWeel(new Point2D.Double(-axisOffsetX, -axisLenght-wheelWidth),           0);
+		drawWeel(new Point2D.Double(axisOffsetX,   axisLenght+wheelWidth),   angleLeft);
+		drawWeel(new Point2D.Double(axisOffsetX,  -axisLenght-wheelWidth),   angleRight);
 		
 		graphics.glPopMatrix();
 	}
 	
-	private void drawWeel(Point2d pos, double angle) {
+	private void drawWeel(Point2D.Double pos, double angle) {
 		graphics.glPushMatrix();
 		
 		// translate and rotate
@@ -161,7 +161,7 @@ public class Car {
 		graphics.glRotated(angle, 0, 0, 1);
 		
 		// draw weel
-		DrawUtils.drawRect(graphics, new Point2d(-wheelLenght, wheelWidth), new Point2d(wheelLenght, -wheelWidth), true);
+		DrawUtils.drawRect(graphics, new Point2D.Double(-wheelLenght, wheelWidth), new Point2D.Double(wheelLenght, -wheelWidth), true);
 		
 		graphics.glPopMatrix();
 	}

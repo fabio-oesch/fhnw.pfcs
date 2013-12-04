@@ -1,12 +1,13 @@
 package janfaessler.assignment_3;
 
-import javax.vecmath.Point2d;
+import java.awt.geom.Point2D;
+
 
 public interface Course {
 	
 	public void draw();
 	
-	public Point2d getStartPosition();
+	public Point2D.Double getStartPosition();
 	
 	public double getStartAngle();
 

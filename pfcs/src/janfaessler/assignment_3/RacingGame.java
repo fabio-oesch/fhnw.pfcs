@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Point2D;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -11,7 +12,6 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
-import javax.vecmath.Point2d;
 
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.awt.TextRenderer;
@@ -95,7 +95,7 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
         gl.glPushMatrix();
         gl.glColor3d(1,1,1);
         gl.glTranslated(left + 2.5, top -4, 0);
-        DrawUtils.drawRect(gl, new Point2d(0,0), new Point2d(width + 0.1, 2.5), false);
+        DrawUtils.drawRect(gl, new Point2D.Double(0,0), new Point2D.Double(width + 0.1, 2.5), false);
         double value = car.getCentripetalForce() * width / maxCentripetalForce;
         if (car.getCentripetalForce() > maxCentripetalForce) {
         	value = width ;
@@ -103,7 +103,7 @@ public class RacingGame extends JFrame implements GLEventListener, KeyListener {
         } else {
         	gl.glColor3d(0,1,0);
         }
-        DrawUtils.drawRect(gl, new Point2d(0.1, 0.1), new Point2d(value, 2.5), true);
+        DrawUtils.drawRect(gl, new Point2D.Double(0.1, 0.1), new Point2D.Double(value, 2.5), true);
         gl.glPopMatrix();
 	}
 
