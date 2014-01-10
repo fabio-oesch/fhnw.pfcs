@@ -23,7 +23,7 @@ public class Draw {
 		return dt;
 	}
 
-	public static void line2d(GL2 gl, Vec2 start, Vec2 end) {
+	public static void line2d(GL2 gl, Vector2 start, Vector2 end) {
 		gl.glBegin(GL2.GL_LINES);
 		gl.glVertex2d(start.x, start.y);
 		gl.glVertex2d(end.x, end.y);
@@ -31,10 +31,10 @@ public class Draw {
 	}
 
 	public static void line2d(GL2 gl, double s) {
-		line2d(gl, new Vec2(0, 0), new Vec2(s, 0));
+		line2d(gl, new Vector2(0, 0), new Vector2(s, 0));
 	}
 
-	public static void line3d(GL2 gl, Vec3 start, Vec3 end) {
+	public static void line3d(GL2 gl, Vector3 start, Vector3 end) {
 		gl.glBegin(GL2.GL_LINES);
 		gl.glVertex3d(start.x, start.y, start.z);
 		gl.glVertex3d(end.x, end.y, end.z);
@@ -42,14 +42,14 @@ public class Draw {
 	}
 
 	public static void axes2d(GL2 gl) {
-		line2d(gl, new Vec2(-100, 0), new Vec2(100, 0));
-		line2d(gl, new Vec2(0, -100), new Vec2(0, 100));
+		line2d(gl, new Vector2(-100, 0), new Vector2(100, 0));
+		line2d(gl, new Vector2(0, -100), new Vector2(0, 100));
 	}
 
 	public static void axes3d(GL2 gl) {
-		line3d(gl, new Vec3(0, 0, 0), new Vec3(100, 0, 0));
-		line3d(gl, new Vec3(0, 0, 0), new Vec3(0, 100, 0));
-		line3d(gl, new Vec3(0, 0, 0), new Vec3(0, 0, 100));
+		line3d(gl, new Vector3(0, 0, 0), new Vector3(100, 0, 0));
+		line3d(gl, new Vector3(0, 0, 0), new Vector3(0, 100, 0));
+		line3d(gl, new Vector3(0, 0, 0), new Vector3(0, 0, 100));
 	}
 
 	public static void rect2d(GL2 gl, Point2D.Double p1, Point2D.Double p2, boolean fill) {
@@ -61,12 +61,12 @@ public class Draw {
 		gl.glEnd();
 	}
 
-	public static void angle(GL2 gl, Vec2 pos, double angle, double size) {
-		line2d(gl, new Vec2(pos.x, pos.y - size), new Vec2(pos.x, pos.y + size));
-		line2d(gl, new Vec2(pos.x - size, pos.y), new Vec2(pos.x + size, pos.y));
+	public static void angle(GL2 gl, Vector2 pos, double angle, double size) {
+		line2d(gl, new Vector2(pos.x, pos.y - size), new Vector2(pos.x, pos.y + size));
+		line2d(gl, new Vector2(pos.x - size, pos.y), new Vector2(pos.x + size, pos.y));
 		line2d(gl,
 				pos,
-				new Vec2(pos.x + size * Math.cos(Math.toRadians(angle)), pos.y + size * Math.sin(Math.toRadians(angle))));
+				new Vector2(pos.x + size * Math.cos(Math.toRadians(angle)), pos.y + size * Math.sin(Math.toRadians(angle))));
 		gl.glBegin(GL.GL_LINE_STRIP);
 		double dt = Math.toRadians(angle) / 10;
 		for (int i = 0; i < 10; i++) {
@@ -100,7 +100,7 @@ public class Draw {
 		gl.glEnd();
 	}
 
-	public static void quad3d(GL2 gl, Vec3 A, Vec3 B, Vec3 C, Vec3 D) {
+	public static void quad3d(GL2 gl, Vector3 A, Vector3 B, Vector3 C, Vector3 D) {
 		gl.glBegin(GL2.GL_QUADS);
 		gl.glVertex3d(A.x, A.y, A.z);
 		gl.glVertex3d(B.x, B.y, B.z);

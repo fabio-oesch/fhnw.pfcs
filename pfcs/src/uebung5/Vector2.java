@@ -1,22 +1,22 @@
 package uebung5;
 
-public class Vec2 {
+public class Vector2 {
 	public double x;
 	public double y;
 
-	public Vec2(double x, double y) {
+	public Vector2(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}
 
 	@Override
-	public Vec2 clone() {
-		return new Vec2(x, y);
+	public Vector2 clone() {
+		return new Vector2(x, y);
 	}
 
-	public Vec2 norm() {
+	public Vector2 norm() {
 		double abs = Math.sqrt(x * x + y * y);
-		return new Vec2(x / abs, y / abs);
+		return new Vector2(x / abs, y / abs);
 	}
 
 	@Override

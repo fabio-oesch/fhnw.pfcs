@@ -1,5 +1,6 @@
 package uebung6;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -53,7 +54,7 @@ public class FlyingObjects extends JFrame implements GLEventListener, KeyListene
 	public FlyingObjects() {
 		setName("FlyingObjects");
 		setTitle("FlyingObjects");
-		setSize(800, 600);
+		setSize(1200, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addKeyListener(this);
 
@@ -71,7 +72,7 @@ public class FlyingObjects extends JFrame implements GLEventListener, KeyListene
 	@Override
 	public void init(GLAutoDrawable glad) {
 		GL2 gl = glad.getGL().getGL2();
-		gl.glClearColor(0, 0, 0, 1.0f);
+		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		gl.glEnable(GL2.GL_NORMALIZE);
 		gl.glEnable(GL2.GL_LIGHT0);
@@ -85,8 +86,8 @@ public class FlyingObjects extends JFrame implements GLEventListener, KeyListene
 	}
 
 	@Override
-	public void display(GLAutoDrawable glad) {
-		GL2 gl = glad.getGL().getGL2();
+	public void display(GLAutoDrawable drawable) {
+		GL2 gl = drawable.getGL().getGL2();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT); // Clear
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -96,7 +97,7 @@ public class FlyingObjects extends JFrame implements GLEventListener, KeyListene
 		gl.glTranslated(0, -10, 0);
 
 		gl.glPushMatrix();
-		gl.glColor3d(1, 1, 0);
+		gl.glColor3d(0, 0, 0);
 		gl.glRotated(45, 0, 1, 0);
 		gl.glDisable(GL2.GL_LIGHTING);
 		Draw.axes3d(gl);
@@ -119,10 +120,24 @@ public class FlyingObjects extends JFrame implements GLEventListener, KeyListene
 				it.remove();
 		}
 
-		// draw car info
-		renderer.beginRendering(glad.getWidth(), glad.getHeight());
-		renderer.draw("shooting: [speed: " + v0 + " angle: " + w + "] angle speed: [x:" + aV0.x + " y:" + aV0.y + " z:"
-				+ aV0.z + "]", 10, 20);
+		// draw info
+		renderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		renderer.setColor(Color.BLACK);
+		renderer.draw("elevation: " + elev + ", azimut: " + azim, 10, 410);
+		renderer.draw("Quadersize: " + quaderSize.x + ", " + quaderSize.y + ", " + quaderSize.z, 10, 430);
+		renderer.draw("Angular speed: " + aV0.x + ", " + aV0.y + ", " + aV0.z, 10, 450);
+		renderer.draw(
+				"Help: '1' for quader. '2' for torus. 'UP' to increase elevation. 'DOWN' to decrease elevation. 'LEFT' to increase azimut. 'RIGHT' to decrease azimut.",
+				10, 470);
+		renderer.draw(
+				"Help: 'V' increase velocity. 'v' decrease velocity. 'W' to increase omega. 'w' to decrease omega.",
+				10, 490);
+		renderer.draw(
+				"Help: 'A' to increase quadersize (x). 'a' to decrease quadersize (x). 'B' to increase quadersize(y). 'b' to decrease quadersize(y). 'C' to increase quadersize(z). 'c' to decrease quadersize(z).",
+				10, 510);
+		renderer.draw(
+				"Help: 'X' to increase angular speed (x). 'x' to decrease angular speed (x).'Y' to increase angular speed (y). 'y' to decrease angular speed (y). 'Z' to increase angular speed (z). 'z' to decrease angular speed (z).",
+				10, 530);
 		renderer.endRendering();
 	}
 

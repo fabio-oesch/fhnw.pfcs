@@ -1,6 +1,7 @@
 package uebung4;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -15,6 +16,7 @@ import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.swing.JFrame;
 
 import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Gyroscope implements GLEventListener, KeyListener {
@@ -25,17 +27,19 @@ public class Gyroscope implements GLEventListener, KeyListener {
 	GLUT glut;
 	GL2 gl;
 	double elev = -90;
-	double azim = 40;
+	double azim = 90;
 	double dist = 4;
 	double phi = 60;
 	double omega = 3;
 	double dt = 0.01;
 
+	private TextRenderer renderer;
+
 	public Gyroscope() {
 		JFrame f = new JFrame("Gyroskop");
 		canvas = new GLCanvas();
 		f.setSize(800, 600);
-		f.setBackground(Color.gray);
+		f.setBackground(Color.WHITE);
 		f.addKeyListener(this);
 		canvas.addGLEventListener(this);
 		canvas.addKeyListener(this);
@@ -53,11 +57,13 @@ public class Gyroscope implements GLEventListener, KeyListener {
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		gl = drawable.getGL().getGL2();
-		gl.glClearColor(0f, 0f, 0f, 1.0f);
+		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glut = new GLUT();
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		gl.glEnable(GLLightingFunc.GL_NORMALIZE);
 		gl.glEnable(GLLightingFunc.GL_LIGHT0);
+
+		renderer = new TextRenderer(new Font("Arial", Font.BOLD, 10));
 	}
 
 	@Override
@@ -84,19 +90,30 @@ public class Gyroscope implements GLEventListener, KeyListener {
 		drawComposition(phi, 6);
 
 		gl.glPopMatrix();
+
+		// draw info
+		renderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		renderer.setColor(Color.BLACK);
+		renderer.draw("Azimut: " + azim, 10, 490);
+		renderer.draw("Elevation: " + elev, 10, 510);
+		renderer.draw("Omega: " + omega, 10, 530);
+		renderer.draw(
+				"Help: 'UP' to decrease elevation. 'DOWN' to increase elevation. 'LEFT' to decrease azimut. 'RIGHT' to increase azimut. 'w' to decrease omega and 'W' to increase omega",
+				10, 550);
+		renderer.endRendering();
 	}
 
 	private void drawStage(double height) {
 		gl.glPushMatrix();
 
 		// stab
-		gl.glColor3d(0.6, 0.6, 0.6);
+		gl.glColor3d(0.75, 0.75, 0.75);
 		glut.glutSolidCylinder(0.1, -height, 64, 64);
 
 		// base
 		gl.glTranslated(0, 0, -4);
-		gl.glColor3d(0.6, 0.6, 0.6);
-		glut.glutSolidCone(0.75, height / 3, 64, 64);
+		gl.glColor3d(0.75, 0.75, 0.75);
+		glut.glutSolidCone(0.5, height / 3, 64, 64);
 
 		gl.glPopMatrix();
 	}
@@ -111,19 +128,19 @@ public class Gyroscope implements GLEventListener, KeyListener {
 		gl.glTranslated(-0.05, 0, -(size / 2));
 
 		// stab
-		gl.glColor3d(0.6, 0.6, 0.6);
+		gl.glColor3d(0.8, 0.75, 0.75);
 		glut.glutSolidCylinder(0.1, size, 64, 64);
 
 		// gewichte
-		gl.glColor3d(0.75, 0, 0);
-		addWeight(0.35, 0.2, size * 55 / 60);
-		gl.glColor3d(0, 0, 0.75);
-		addWeight(0.25, 0.2, size * 50 / 60);
+		gl.glColor3d(0.75, 0.75, 0.75);
+		addWeight(0.4, 0.2, size * 55 / 60);
+		gl.glColor3d(0.75, 0.75, 0.75);
+		addWeight(0.3, 0.2, size * 50 / 60);
 
 		gl.glRotated(phi * 180 / Math.PI, 0, 0, 1);
 
 		// gyroscope
-		gl.glColor3d(0.75, 0.75, 0);
+		gl.glColor3d(0.75, 0.75, 0.75);
 		glut.glutSolidCylinder(1, 0.25, 20, 20);
 
 		gl.glPopMatrix();

@@ -6,16 +6,17 @@ import javax.media.opengl.GL2;
 
 public class Particle {
 
-	private static final Color color = Color.BLUE;
+	private static final Color color = Color.BLACK;
 	private static final double RADIUS = 0.1;
 
 	private double x = 0;
 	private double y = 0;
 	private double speed = 0.2;
 
-	public Particle(double x, double y) {
+	public Particle(double x, double y, double speed) {
 		this.x = x;
 		this.y = y;
+		this.speed = speed;
 	}
 
 	public void draw(GL2 gl) {

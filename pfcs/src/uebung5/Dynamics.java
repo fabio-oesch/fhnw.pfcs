@@ -1,8 +1,16 @@
 package uebung5;
 
-public abstract class Dynamics {
+public class Dynamics {
 
 	public static double g = Draw.getGravity();
+
+	private final double r2;
+	private final double r4;
+
+	public Dynamics(double r) {
+		r2 = r * r;
+		r4 = r2 * 2;
+	}
 
 	public static enum Type {
 		Euler, Runge
@@ -64,5 +72,13 @@ public abstract class Dynamics {
 		return result;
 	}
 
-	public abstract double[] f(double[] x);
+	public double[] f(double[] x) {
+		assert x.length == 2 : "Vektor muss 2 Komponenten enthalten";
+		double xy2 = x[0] * x[0] + x[1] * x[1];
+		double xy22 = xy2 * xy2;
+		double X = 1 + r2 / xy2 - (r4 * x[0] * x[0]) / xy22;
+		double Y = -(r4 * x[0] * x[1]) / xy22;
+		double[] result = { X, Y };
+		return result;
+	}
 }

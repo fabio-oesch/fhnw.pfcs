@@ -1,25 +1,25 @@
 package uebung5;
 
-public class Vec3 {
+public class Vector3 {
 
 	public double x;
 	public double y;
 	public double z;
 
-	public Vec3(double x, double y, double z) {
+	public Vector3(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
 	@Override
-	public Vec3 clone() {
-		return new Vec3(x, y, z);
+	public Vector3 clone() {
+		return new Vector3(x, y, z);
 	}
 
-	public Vec3 norm() {
+	public Vector3 norm() {
 		double abs = Math.sqrt(x * x + y * y + z * z);
-		return new Vec3(x / abs, y / abs, z / abs);
+		return new Vector3(x / abs, y / abs, z / abs);
 	}
 
 	@Override
